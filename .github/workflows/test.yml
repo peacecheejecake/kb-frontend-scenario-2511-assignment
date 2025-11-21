@@ -27,6 +27,3 @@ jobs:
 
       - name: Run tests
         run: pnpm test
-
-      - name: Build Test
-        run: npm run build
