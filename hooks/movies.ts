@@ -42,7 +42,7 @@ export interface DetailedMovie {
   Response: string
 }
 
-const INITIAL_MESSAGE = 'Search for the movie title!'
+export const INITIAL_MESSAGE = 'Search for the movie title!'
 
 // 외부에서 초기화할 수 있도록 팩토리 함수로 정의
 export const getInitialState = () => ({
