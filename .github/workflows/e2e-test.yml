@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  cypress-e2e:
+  e2e-tests:
     runs-on: ubuntu-22.04
 
     steps:
@@ -22,33 +22,12 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
+          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build app
-        run: pnpm build
-
-      - name: Start app
-        run: pnpm start &
-
-      - name: Wait for app
-        run: pnpm exec wait-on http://localhost:3000
-
-      - name: Run Cypress
-        run: pnpm exec cypress run
-
-      - name: Upload Cypress screenshots
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
         with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-
-      - name: Upload Cypress videos
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
+          build: pnpm build
+          start: pnpm start
+          browser: chrome
