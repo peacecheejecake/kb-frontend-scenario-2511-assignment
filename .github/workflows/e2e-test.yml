@@ -1,4 +1,4 @@
-name: Test and Build
+name: E2E Test
 
 on:
   push:
@@ -7,29 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  unit-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests
-        run: pnpm test
-
-  e2e-test:
-    needs: unit-test
+  cypress-e2e:
     runs-on: ubuntu-22.04
 
     steps:
@@ -44,15 +22,22 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'pnpm'
+          node-version: 22
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
-        with:
-          build: pnpm build
-          start: pnpm start
-          # browser: chrome
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build app
+        run: pnpm build
+
+      - name: Start app
+        run: pnpm start &
+
+      - name: Wait for app
+        run: pnpm exec wait-on http://localhost:3000
+
+      - name: Run Cypress
+        run: pnpm exec cypress run
 
       - name: Upload Cypress screenshots
         if: failure()
