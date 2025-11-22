@@ -29,6 +29,7 @@ jobs:
         run: pnpm test
 
   e2e-tests:
+    needs: unit-test
     runs-on: ubuntu-22.04
 
     steps:
